@@ -27,7 +27,6 @@
 
 ## Установка и запуск
 
-1. Клонировать репозиторий:  
    ```bash
     git clone https://github.com/human2402/task-manager-human2402
     cd task-manager-human2402

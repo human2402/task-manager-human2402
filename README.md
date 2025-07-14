@@ -33,8 +33,8 @@
 
 1. Клонировать репозиторий:  
    ```bash
-    git clone <ссылка на репозиторий>
-    cd task-manager-t1
+    git clone https://github.com/human2402/task-manager-human2402
+    cd task-manager-human2402
     npm install
     npm run dev
 

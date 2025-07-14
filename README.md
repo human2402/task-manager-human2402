@@ -28,7 +28,7 @@
 ## Установка и запуск
 
    ```bash
-    git clone https://github.com/human2402/task-manager-human2402
+    git clone https://github.com/human2402/task-manager-human2402](https://github.com/human2402/task-manager-human2402.git
     cd task-manager-human2402
     npm install
     npm run dev

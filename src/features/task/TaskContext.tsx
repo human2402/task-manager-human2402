@@ -48,7 +48,7 @@ const initialTasks: Task[] = [
   {
     id: uuidv4(),
     title: "Исправить ошибку отображения в IE11",
-    description: "Некорректное отображение кнопок в Internet Explorer 11.",
+    description: "Некорректное отображение кнопок в Internet Explorer 11. О нет, спасите, как же с этим жить! Некорректное отображение кнопок в Internet Explorer 11.",
     category: "Bug",
     status: "In Progress",
     priority: "High",

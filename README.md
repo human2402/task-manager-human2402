@@ -1,11 +1,9 @@
 # Менеджер задач
 
+[Task Manager](https://dmitrym-task-manager.vercel.app/)
+
 Домашее задание от ИТ-Лагеря Т1
 Выполнил Малежик Дмитрий, tg: @human2402
-
-
-Выполнил дополнительно фильтрацию задач по категории и приоритету
-в компоненте TaskFilters.tsx
 
 ---
 
@@ -31,10 +29,9 @@
 
 ## Установка и запуск
 
-1. Клонировать репозиторий:  
    ```bash
-    git clone <ссылка на репозиторий>
-    cd task-manager-t1
+    git clone https://github.com/human2402/task-manager-human2402](https://github.com/human2402/task-manager-human2402.git
+    cd task-manager-human2402
     npm install
     npm run dev
 

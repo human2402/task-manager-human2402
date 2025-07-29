@@ -9,4 +9,5 @@ export type Task = {
   category: TaskCategory;
   status: TaskStatus;
   priority: TaskPriority;
+  createdAt?: string; 
 };

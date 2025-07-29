@@ -7,39 +7,51 @@ import {
     Typography,
     Stack,
   } from "@mui/material";
-  import { useParams, useNavigate } from "react-router-dom";
-  import { useTasks } from "./TaskContext";
-  import type { TaskCategory, TaskPriority, TaskStatus } from "./types";
   import { useState } from "react";
-import { toast } from "react-toastify";
+  import { useNavigate } from "react-router-dom";
+  import { toast } from "react-toastify";
+  import { useDispatch } from "react-redux";
   
-  export default function TaskDetails() {
-    const { id } = useParams();
-    const { tasks, updateTask } = useTasks();
+  import type { TaskCategory, TaskPriority, TaskStatus } from "@entities/task/model/types";
+  import { createTask } from "@entities/task/model/slice";
+  import type { AppDispatch } from "@/app/store";
+  
+  export default function TaskCreate() {
+    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
   
-    const task = tasks.find((t) => t.id === id);
-    const [title, setTitle] = useState(task?.title ?? "");
-    const [description, setDescription] = useState(task?.description ?? "");
-    const [category, setCategory] = useState<TaskCategory>(task?.category ?? "Feature");
-    const [status, setStatus] = useState<TaskStatus>(task?.status ?? "To Do");
-    const [priority, setPriority] = useState<TaskPriority>(task?.priority ?? "Medium");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState<TaskCategory>("Feature");
+    const [status, setStatus] = useState<TaskStatus>("To Do");
+    const [priority, setPriority] = useState<TaskPriority>("Medium");
+
+    const [titleError, setTitleError] = useState(false); 
+    const [descError, setDescError] = useState(false);
   
-    if (!task) {
-      return <Typography>Задача не найдена</Typography>;
-    }
+    const handleCreate = async () => {
+      // Validation
+      if (!title.trim()) {
+        setTitleError(true);
+        toast.error("Заголовок обязателен");
+        return;
+      }
+      if (!description.trim()) {
+        setDescError(true);
+        toast.error("Описание обязателено");
+        return;
+      }
+      // Dispatching s
   
-    const handleSave = () => {
-      updateTask({
-        ...task,
-        title,
-        description,
-        category,
-        status,
-        priority,
-      });
-      toast.info("Задача сохранена");
-      navigate("/");
+      try {
+        await dispatch(
+          createTask({ title, description, category, status, priority, createdAt: new Date().toISOString() })
+        ).unwrap();
+        toast.success("Задача создана");
+        navigate("/");
+      } catch (err) {
+        toast.error("Ошибка при создании задачи");
+      }
     };
   
     const handleCancel = () => {
@@ -49,19 +61,31 @@ import { toast } from "react-toastify";
     return (
       <Container maxWidth="sm" sx={{ py: 4 }}>
         <Typography variant="h5" gutterBottom>
-          Редактирование задачи
+          Новая задача
         </Typography>
         <Stack spacing={2}>
           <TextField
             label="Заголовок"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (e.target.value.trim()) {
+                setTitleError(false);
+              }
+            }}
+            error={titleError}
             fullWidth
           />
           <TextField
             label="Описание"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              if (e.target.value.trim()) {
+                setDescError(false);
+              }
+            }}
+            error={descError}
             multiline
             rows={3}
             fullWidth
@@ -105,8 +129,8 @@ import { toast } from "react-toastify";
           </TextField>
   
           <Box display="flex" justifyContent="space-between" mt={2}>
-            <Button variant="contained" color="primary" onClick={handleSave}>
-              Сохранить
+            <Button variant="contained" color="primary" onClick={handleCreate}>
+              Создать
             </Button>
             <Button variant="outlined" color="secondary" onClick={handleCancel}>
               Отмена

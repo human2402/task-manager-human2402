@@ -1,7 +1,8 @@
 import { Box, FormControl, InputLabel, MenuItem, Select, Button, Stack } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
 
-import type { TaskCategory, TaskStatus, TaskPriority } from "./types";
+import type { TaskCategory, TaskStatus, TaskPriority } from "@entities/task/model/types";
+import { useState } from "react";
 
 type Props = {
   category: TaskCategory | "";
@@ -22,6 +23,7 @@ export default function TaskFilters({
   onPriorityChange,
   onClear,
 }: Props) {
+  const [sortOption, setSortOption] = useState<"createdAt" | "priority" | "">("");
   return (
     <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
       <FormControl fullWidth>
@@ -70,6 +72,7 @@ export default function TaskFilters({
           <MenuItem value="High">Высокий</MenuItem>
         </Select>
       </FormControl>
+      
 
       <Box display="flex" alignItems="center">
         <Button variant="outlined" color="secondary" onClick={onClear}>

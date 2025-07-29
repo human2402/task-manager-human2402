@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import TaskList from "../features/task/TaskList";
+import TaskList from "../widgets/TaskList";
 
 export default function Home() {
   return (

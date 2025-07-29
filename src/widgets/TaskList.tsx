@@ -1,9 +1,16 @@
-import { Grid, Typography, Box } from "@mui/material";
-import TaskItem from "./TaskItem";
-import { useTasks } from "./TaskContext";
-import { useState } from "react";
-import TaskFilters from "./TaskFilters";
-import type { TaskCategory, TaskStatus, TaskPriority } from "./types";
+import { Grid, Typography, Box, Button } from "@mui/material";
+import TaskItem from "../entities/task/ui/TaskItem";
+import { useEffect, useState } from "react";
+import TaskFilters from "../features/taskFilters/TaskFilters";
+import TaskSort from "@features/taskSort/TaskSort";
+import type { TaskCategory, TaskStatus, TaskPriority } from "../entities/task/model/types";
+
+
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '@/app/store';
+import { fetchTasks } from "@/entities/task/model/slice";
+import { useNavigate } from "react-router-dom";
+import LoadingStatus from "./LoadingStatus";
 
 const statuses: { key: TaskStatus; label: string }[] = [
   { key: "To Do", label: "К выполнению" },
@@ -11,13 +18,30 @@ const statuses: { key: TaskStatus; label: string }[] = [
   { key: "Done", label: "Сделано" },
 ];
 
+const priorityOrder: Record<TaskPriority, number> = {
+  Low: 1,
+  Medium: 2,
+  High: 3,
+};
+
+
 export default function TaskList() {
-  const { tasks } = useTasks();
+  
+  const dispatch = useDispatch<AppDispatch>();
+  const tasks = useSelector((state: RootState) => state.task.tasks);
+  const status = useSelector((state: RootState) => state.task.status);
+  const nav = useNavigate ()
+
+  useEffect(() => {
+    if (status === 'idle') dispatch(fetchTasks());
+  }, [status, dispatch]);
+  
 
   // Фильтры
   const [categoryFilter, setCategoryFilter] = useState<TaskCategory | "">("");
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "">("");
   const [priorityFilter, setPriorityFilter] = useState<TaskPriority | "">("");
+  const [sortOption, setSortOption] = useState<"createdAt" | "priority" | "">("");
 
   // Фильтрация задач
   const filteredTasks = tasks.filter((task) => {
@@ -28,11 +52,22 @@ export default function TaskList() {
     );
   });
 
+  // Сортировка
+  const sortedTasks = [...filteredTasks].sort((a, b) => {
+    if (sortOption === "createdAt") {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    if (sortOption === "priority") {
+      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    }
+    return 0;
+  });
+
   // Расспределение задач по колонкам
   const tasksByStatus = statuses.map(({ key, label }) => ({
     key,
     label,
-    tasks: filteredTasks.filter((task) => task.status === key),
+    tasks: sortedTasks.filter((task) => task.status === key),
   }));
 
   // Проверка на наличие задач
@@ -43,6 +78,7 @@ export default function TaskList() {
     setCategoryFilter("");
     setStatusFilter("");
     setPriorityFilter("");
+    setSortOption("");
   };
 
   return (
@@ -58,8 +94,26 @@ export default function TaskList() {
           onClear={clearFilters}
         />
       </Box>
+      
+      
+      <Box 
+        mb={2} display="flex" 
+        justifyContent="space-between" 
+        alignItems="center" 
+      >
+        <TaskSort sortOption = {sortOption} setSortOption = {setSortOption} />
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={() => nav('/task/new')}
+        >
+            + Новая задача
+        </Button>
+      </Box>
 
-      {allEmpty ? (
+      { status!=='succeeded' ? 
+      <LoadingStatus status={status}/> : 
+      allEmpty ? (
         <Box textAlign="center" py={6}>
           <Typography variant="h6" color="text.secondary">
             Нет задач по выбранным фильтрам

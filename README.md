@@ -58,6 +58,7 @@ Telegram: @human2402
    cd task-manager-human2402
    npm install
    npm run dev
+   ```
 
 ---
 
@@ -73,4 +74,5 @@ Telegram: @human2402
    ├── widgets/           # Составные блоки интерфейса (TaskList, LoadingStatus)
    ├── pages/             # Страницы приложения (Home, TaskCreatePage и т.д.)
    ├── routes/            # Конфигурация роутов
+   ```
 

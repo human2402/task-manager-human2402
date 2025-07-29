@@ -115,7 +115,7 @@ export default function TaskItem({ task }: Props) {
         >
           Редактировать
         </Button>
-        <IconButton onClick={handleDelete} color="gray">
+        <IconButton onClick={handleDelete} sx={{ color: 'gray' }}>
           <DeleteIcon />
         </IconButton>
       </CardActions>
